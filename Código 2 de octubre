@@ -1,0 +1,23 @@
+install.packages("tidyverse")
+install.packages("mirt")
+install.packages("devtools")
+devtools::install_github("masurp/ggmirt")
+library(tidyverse)
+library(mirt)
+library(ggmirt)
+set.seed(42)
+d <- sim_irt(500, 10, discrimination = .25, seed = 42)
+head(d)
+unimodel <- 'F1 = 1-10'
+
+fit3PL <- mirt(data = d, 
+               model = unimodel,  # alternatively, we could also just specify model = 1 in this case
+               itemtype = "3PL", 
+               verbose = FALSE)
+fit3PL
+params3PL <- coef(fit3PL, IRTpars = TRUE, simplify = TRUE)
+round(params3PL$items, 2) # g = c = guessing parameter
+itemfit(fit3PL)
+itemfitPlot(fit3PL)
+tracePlot(fit3PL)
+tracePlot(fit3PL, facet = F, legend = T) + scale_color_brewer(palette = "Set3")
